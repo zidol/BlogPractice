@@ -51,7 +51,7 @@
 			pst = con.prepareStatement(sql);
 			pst.setString(1, name);
 			pst.setString(2, email);
-			pst.setString(3, ymd);
+			pst.setString(3, ymd);	
 			pst.setString(4, subject);
 			pst.setString(5, content);
 			cnt = pst.executeUpdate();

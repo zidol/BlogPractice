@@ -20,9 +20,24 @@
 	Vector content = new Vector();
 	
 	int where = 1;
+	int totalgroup = 0;
+	int maxpages = 2;
+	int startpages = 1;
+	int endpage = startpages + maxpages-1;
+	int wheregroup = 1;
 	if(request.getParameter("go") != null){
 		where = Integer.parseInt(request.getParameter("go"));
+		wheregroup = (where-1)/maxpages + 1;
+		startpages = (wheregroup-1) * maxpages+1;
+		endpage = startpages + maxpages - 1;
+	} else if(request.getParameter("gogroup") != null) {
+		wheregroup = Integer.parseInt(request.getParameter("gogroup"));
+		startpages = (wheregroup-1) * maxpages+1;
+		where = startpages;
+		endpage = startpages + maxpages - 1;
 	}
+	int nextgroup = wheregroup +1;
+	int priorgroup = wheregroup -1;
 	
 	int nextpage = where + 1;
 	int priorpage = where - 1;
@@ -64,6 +79,11 @@
 				endrow = startrow + maxrows-1;
 				if(endrow >=totalrows){
 					endrow = totalrows-1;
+				}
+				
+				totalgroup = (totalpages-1)/maxpages +1;
+				if(endpage>totalpages){
+					endpage = totalpages;
 				}
 				
 				for(int j=startrow; j<=endrow; j++) {
@@ -128,18 +148,32 @@
 	}
 	
 	out.println("<div align='center'>");
-	if(where>1) {
+	
+	if(wheregroup>1) {
 		out.println("[<a href='dbgb_show.jsp'>처음</a>]");
-		out.println("[<a href='dbgb_show.jsp?go=" + priorpage +"'>이전</a>]");
+		out.println("[<a href='dbgb_show.jsp?gogroup=" + priorgroup +"'>이전</a>]");
 	} else {
 		out.println("[처음]");
 		out.println("[이전]");
 	}
 	
+	for(int jj=startpages; jj <= endpage; jj++) {
+		if(jj == where) {
+			out.println("[" +jj+"]");
+		} else {
+			out.println("[<a href='dbgb_show.jsp?go=" + jj + "'>" +jj + "</a>");
+		}
+	}
+	
+	if(wheregroup < totalgroup) {
+		out.println("[<a href='dbgb_show.jsp?gogroup=" + nextgroup +"'>다음</a>]");
+		out.println("[<a href='dbgb_show.jsp?gogroup=" + totalgroup +"'>마지막</a>]");
+	}/* 
+	
 	if(where < totalpages) {
 		out.println("[<a href='dbgb_show.jsp?go=" + nextpage +"'>다음</a>]");
-		out.println("[<a href='dbgb_show.jsp'>마지막</a>]");
-	} else {
+		out.println("[<a href='dbgb_show.jsp?go=" + totalpages +"'>마지막</a>]");
+	}  */else {
 
 		out.println("[다음]");
 		out.println("[마지막]");

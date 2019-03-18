@@ -1,3 +1,4 @@
+<%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.io.*, java.sql.*, java.util.*" %>
@@ -15,19 +16,23 @@
 	String email = request.getParameter("email");
 	String subject = request.getParameter("subject");
 	String content = request.getParameter("content");
-	String ymd = (new java.util.Date()).toLocaleString();
+	/* String ymd = (new java.util.Date()).toLocaleString(); */
+	java.util.Date yymmdd = new java.util.Date();
+	SimpleDateFormat myformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+	String ymd = myformat.format(yymmdd);
+	
 	String sql = null;
 	Connection con = null;
 	//Statement st = null;
 	PreparedStatement pst = null;
-// 	int pos = 0;
+ 	int pos = 0;
 	
-// 	while ((pos = content.indexOf("\'", pos)) != -1) {
-// 		String left = content.substring(0, pos);
-// 		String right = content.substring(pos, content.length());
-// 		content = left + "\'" + right;
-// 		pos += 2;
-// 	}
+ 	while ((pos = content.indexOf("\'", pos)) != -1) {
+		String left = content.substring(0, pos);
+ 		String right = content.substring(pos, content.length());
+		content = left + "\'" + right;
+ 		pos += 2;
+ 	}
 
 	int cnt = 0;
 	
@@ -51,7 +56,7 @@
 			pst = con.prepareStatement(sql);
 			pst.setString(1, name);
 			pst.setString(2, email);
-			pst.setString(3, ymd);	
+			pst.setString(3, ymd);
 			pst.setString(4, subject);
 			pst.setString(5, content);
 			cnt = pst.executeUpdate();
